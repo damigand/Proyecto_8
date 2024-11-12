@@ -1,0 +1,21 @@
+{
+    "name": "proyecto_8",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "server": "node index.js",
+        "dog-seed": "node ./src/utils/seeds/dog",
+        "cat-seed": "node ./src/utils/seeds/cat",
+        "all-seeds": "npm run dog-seed && npm run cat-seed"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "express": "^4.21.1",
+        "mongodb": "^6.10.0",
+        "mongoose": "^8.8.1"
+    }
+}
