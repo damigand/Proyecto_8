@@ -2,7 +2,8 @@ const Cat = require('../models/Cat');
 
 const getAllCats = async (req, res, next) => {
     try {
-        return res.status(200).json('getAllCats');
+        const cats = await Cat.find();
+        return res.status(200).json(cats);
     } catch (error) {
         return res.status(500).json(`error (getAllCats): ${error}`);
     }
@@ -10,7 +11,10 @@ const getAllCats = async (req, res, next) => {
 
 const getCatById = async (req, res, next) => {
     try {
-        return res.status(200).json('getCatById');
+        const { id } = req.params;
+        const cat = await Cat.findById(id);
+
+        return res.status(200).json(cat);
     } catch (error) {
         return res.status(500).json(`error (getCatById): ${error}`);
     }
@@ -18,7 +22,12 @@ const getCatById = async (req, res, next) => {
 
 const getCatByName = async (req, res, next) => {
     try {
-        return res.status(200).json('getCatByName');
+        const { name } = req.params;
+        const cats = await Cat.find({ name: { $regex: name, $options: 'i' } });
+
+        if (!cats.length) return res.status(200).json('Could not find cats with that name.');
+
+        return res.status(200).json(cats);
     } catch (error) {
         return res.status(500).json(`error (getCatByName): ${error}`);
     }
@@ -26,7 +35,12 @@ const getCatByName = async (req, res, next) => {
 
 const getCatByBreed = async (req, res, next) => {
     try {
-        return res.status(200).json('getCatByBreed');
+        const { breed } = req.params;
+        const cats = await Cat.find({ breed: { $regex: breed, $options: 'i' } });
+
+        if (!cats.length) return res.status(200).json('Could not find cats of that breed.');
+
+        return res.status(200).json(cats);
     } catch (error) {
         return res.status(500).json(`error (getCatByBreed): ${error}`);
     }
@@ -34,7 +48,12 @@ const getCatByBreed = async (req, res, next) => {
 
 const getCatByAge = async (req, res, next) => {
     try {
-        return res.status(200).json('getCatByAge');
+        const { age } = req.params;
+        const cats = await Cat.find({ age: { $gte: age } });
+
+        if (!cats.length) return res.status(200).json('Could not find cats with that age or over.');
+
+        return res.status(200).json(cats);
     } catch (error) {
         return res.status(500).json(`error (getCatByAge): ${error}`);
     }
@@ -42,7 +61,18 @@ const getCatByAge = async (req, res, next) => {
 
 const createCat = async (req, res, next) => {
     try {
-        return res.status(201).json('createCat');
+        if (!req.body.name) return res.status(400).json('The cat needs to have a name.');
+        if (!req.body.age) return res.status(400).json('The cat needs to have an age.');
+        if (!req.body.breed) return res.status(400).json('The cat needs to have a breed.');
+
+        var cat = new Cat({
+            name: req.body.name,
+            age: req.body.age,
+            breed: req.body.breed,
+        });
+
+        cat = await cat.save();
+        return res.status(201).json(cat);
     } catch (error) {
         return res.status(500).json(`error (createCat): ${error}`);
     }
@@ -50,7 +80,17 @@ const createCat = async (req, res, next) => {
 
 const editCat = async (req, res, next) => {
     try {
-        return res.status(200).json('editCat');
+        const { id } = req.params;
+        var cat = await Cat.findById(id);
+        if (!cat) return res.status(404).json('Could not find the cat.');
+
+        cat.name = req.body.name || cat.name;
+        cat.age = req.body.age || cat.age;
+        cat.breed = req.body.breed || cat.breed;
+
+        const newCat = await cat.save();
+
+        return res.status(200).json(newCat);
     } catch (error) {
         return res.status(500).json(`error (editCat): ${error}`);
     }
@@ -58,7 +98,10 @@ const editCat = async (req, res, next) => {
 
 const deleteCat = async (req, res, next) => {
     try {
-        return res.status(200).json('deleteCat');
+        const { id } = req.params;
+        await Cat.findByIdAndDelete(id);
+
+        return res.status(200).json('Cat successfully deleted.');
     } catch (error) {
         return res.status(500).json(`error (deleteCat): ${error}`);
     }
