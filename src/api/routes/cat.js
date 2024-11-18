@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/cat');
+const { uploadImg } = require('../../middlewares/multerUpload');
 
 router.get('/', controller.getAllCats);
 
@@ -12,9 +13,9 @@ router.get('/breed/:breed', controller.getCatByBreed);
 
 router.get('/age/:age', controller.getCatByAge);
 
-router.post('/create', controller.createCat);
+router.post('/create', uploadImg('Cats').single('img'), controller.createCat);
 
-router.put('/edit/:id', controller.editCat);
+router.put('/edit/:id', uploadImg('Cats').single('img'), controller.editCat);
 
 router.delete('/delete/:id', controller.deleteCat);
 

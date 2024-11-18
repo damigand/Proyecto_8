@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/dog');
+const { uploadImg } = require('../../middlewares/multerUpload');
 
 router.get('/', controller.getAllDogs);
 
@@ -12,9 +13,9 @@ router.get('/breed/:breed', controller.getDogByBreed);
 
 router.get('/age/:age', controller.getDogByAge);
 
-router.post('/create', controller.createDog);
+router.post('/create', uploadImg('Dogs').single('img'), controller.createDog);
 
-router.put('/edit/:id', controller.editDog);
+router.put('/edit/:id', uploadImg('Dogs').single('img'), controller.editDog);
 
 router.delete('/delete/:id', controller.deleteDog);
 

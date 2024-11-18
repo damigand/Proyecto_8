@@ -1,4 +1,5 @@
 const Dog = require('../models/Dog');
+const { deleteImgCloudinary } = require('../../middlewares/multerDelete');
 
 const getAllDogs = async (req, res, next) => {
     try {
@@ -71,6 +72,10 @@ const createDog = async (req, res, next) => {
             breed: req.body.breed,
         });
 
+        if (req.file) {
+            dog.img = req.file.path;
+        }
+
         dog = await dog.save();
         return res.status(201).json(dog);
     } catch (error) {
@@ -88,6 +93,12 @@ const editDog = async (req, res, next) => {
         dog.age = req.body.age || dog.age;
         dog.breed = req.body.breed || dog.breed;
 
+        if (req.file) {
+            if (dog.img) deleteImgCloudinary(dog.img);
+
+            dog.img = req.file.path;
+        }
+
         const newDog = await dog.save();
 
         return res.status(200).json(newDog);
@@ -99,7 +110,9 @@ const editDog = async (req, res, next) => {
 const deleteDog = async (req, res, next) => {
     try {
         const { id } = req.params;
-        await Dog.findByIdAndDelete(id);
+        const dog = await Dog.findByIdAndDelete(id);
+
+        deleteImgCloudinary(dog.img);
 
         return res.status(200).json('Dog successfully deleted.');
     } catch (error) {
