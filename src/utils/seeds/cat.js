@@ -26,15 +26,18 @@ const data = [
         name: 'Paquito',
         age: 8,
         breed: 'Burmilla',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072033/Cats/aopscbiitqvmklwgqc2n.jpg',
     },
     {
         name: 'Felix',
         age: 4,
         breed: 'Bengal',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072097/Cats/yuizasxrz8aab7jkxgmw.webp',
     },
     {
         name: 'Izzy',
         age: 10,
         breed: 'British Shorthair',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072114/Cats/zyrobdlzasrnjmzsbga7.avif',
     },
 ];

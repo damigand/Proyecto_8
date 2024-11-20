@@ -26,15 +26,18 @@ const data = [
         name: 'Aspen',
         age: 3,
         breed: 'Beagle',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072181/Dogs/fndawwd9ewk0gqbcpzn7.webp',
     },
     {
         name: 'Bella',
         age: 9,
         breed: 'Bulldog',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072214/Dogs/vraczqvasrhg6ehd4on3.webp',
     },
     {
         name: 'Tango',
         age: 1,
         breed: 'Yorkshire terrier',
+        img: 'https://res.cloudinary.com/dblbxi1qe/image/upload/v1732072226/Dogs/lwlxdr3hnjvcn09rvyae.jpg',
     },
 ];
