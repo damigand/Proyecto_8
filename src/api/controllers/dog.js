@@ -3,7 +3,7 @@ const { deleteImgCloudinary } = require('../../middlewares/multerDelete');
 
 const getAllDogs = async (req, res, next) => {
     try {
-        const dogs = await Dog.find();
+        const dogs = await Dog.find().populate('siblings', '-siblings');
         return res.status(200).json(dogs);
     } catch (error) {
         return res.status(500).json(`error (getAllDogs): ${error}`);
@@ -13,7 +13,7 @@ const getAllDogs = async (req, res, next) => {
 const getDogById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const dog = await Dog.findById(id);
+        const dog = await Dog.findById(id).populate('siblings', '-siblings');
 
         return res.status(200).json(dog);
     } catch (error) {
@@ -24,7 +24,7 @@ const getDogById = async (req, res, next) => {
 const getDogByName = async (req, res, next) => {
     try {
         const { name } = req.params;
-        const dogs = await Dog.find({ name: { $regex: name, $options: 'i' } });
+        const dogs = await Dog.find({ name: { $regex: name, $options: 'i' } }).populate('siblings', '-siblings');
 
         if (!dogs.length) return res.status(200).json('Could not find dogs with that name.');
 
@@ -37,7 +37,7 @@ const getDogByName = async (req, res, next) => {
 const getDogByBreed = async (req, res, next) => {
     try {
         const { breed } = req.params;
-        const dogs = await Dog.find({ breed: { $regex: breed, $options: 'i' } });
+        const dogs = await Dog.find({ breed: { $regex: breed, $options: 'i' } }).populate('siblings', '-siblings');
 
         if (!dogs.length) return res.status(200).json('Could not find dogs of that breed.');
 
@@ -50,7 +50,7 @@ const getDogByBreed = async (req, res, next) => {
 const getDogByAge = async (req, res, next) => {
     try {
         const { age } = req.params;
-        const dogs = await Dog.find({ age: { $gte: age } });
+        const dogs = await Dog.find({ age: { $gte: age } }).populate('siblings', '-siblings');
 
         if (!dogs.length) return res.status(200).json('Could not find dogs with that age or over.');
 
@@ -70,6 +70,7 @@ const createDog = async (req, res, next) => {
             name: req.body.name,
             age: req.body.age,
             breed: req.body.breed,
+            siblings: req.body.siblings,
         });
 
         if (req.file) {
@@ -92,6 +93,16 @@ const editDog = async (req, res, next) => {
         dog.name = req.body.name || dog.name;
         dog.age = req.body.age || dog.age;
         dog.breed = req.body.breed || dog.breed;
+
+        //obtengo los "siblings" del perro.
+        var siblings = req.body.siblings || [];
+
+        //Si hay "siblings", filtro los strings vacíos y el id del propio perro
+        //(Un perro no puede ser su propio "sibling")
+        if (siblings) siblings = siblings.filter((s) => s && s != dog.id);
+
+        //Si sigue habiendo "siblings", se los pongo al perro
+        dog.siblings = siblings;
 
         if (req.file) {
             if (dog.img) deleteImgCloudinary(dog.img);

@@ -3,7 +3,7 @@ const { deleteImgCloudinary } = require('../../middlewares/multerDelete');
 
 const getAllCats = async (req, res, next) => {
     try {
-        const cats = await Cat.find();
+        const cats = await Cat.find().populate('siblings', '-siblings');
         return res.status(200).json(cats);
     } catch (error) {
         return res.status(500).json(`error (getAllCats): ${error}`);
@@ -24,7 +24,7 @@ const getCatById = async (req, res, next) => {
 const getCatByName = async (req, res, next) => {
     try {
         const { name } = req.params;
-        const cats = await Cat.find({ name: { $regex: name, $options: 'i' } });
+        const cats = await Cat.find({ name: { $regex: name, $options: 'i' } }).populate('siblings', '-siblings');
 
         if (!cats.length) return res.status(200).json('Could not find cats with that name.');
 
@@ -37,7 +37,7 @@ const getCatByName = async (req, res, next) => {
 const getCatByBreed = async (req, res, next) => {
     try {
         const { breed } = req.params;
-        const cats = await Cat.find({ breed: { $regex: breed, $options: 'i' } });
+        const cats = await Cat.find({ breed: { $regex: breed, $options: 'i' } }).populate('siblings', '-siblings');
 
         if (!cats.length) return res.status(200).json('Could not find cats of that breed.');
 
@@ -52,7 +52,7 @@ const getCatByAge = async (req, res, next) => {
         const { age } = req.params;
         const cats = await Cat.find({ age: { $gte: age } });
 
-        if (!cats.length) return res.status(200).json('Could not find cats with that age or over.');
+        if (!cats.length) return res.status(200).json('Could not find cats with that age or over.').populate('siblings', '-siblings');
 
         return res.status(200).json(cats);
     } catch (error) {
@@ -70,6 +70,7 @@ const createCat = async (req, res, next) => {
             name: req.body.name,
             age: req.body.age,
             breed: req.body.breed,
+            siblings: req.body.siblings,
         });
 
         if (req.file) {
@@ -92,6 +93,16 @@ const editCat = async (req, res, next) => {
         cat.name = req.body.name || cat.name;
         cat.age = req.body.age || cat.age;
         cat.breed = req.body.breed || cat.breed;
+
+        //obtengo los "siblings" del gato.
+        var siblings = req.body.siblings || [];
+
+        //Si hay "siblings", filtro los strings vacíos y el id del propio gato
+        //(Un gato no puede ser su propio "sibling")
+        if (siblings) siblings = siblings.filter((s) => s && s != cat.id);
+
+        //Si sigue habiendo "siblings", se los pongo al gato
+        cat.siblings = siblings;
 
         if (req.file) {
             if (cat.img) deleteImgCloudinary(cat.img);

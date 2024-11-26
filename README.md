@@ -6,21 +6,23 @@ Este proyecto es el Backend de una aplicación de perros y gatos.
 
 ### Cat
 
-| Name  | Type   | Required | default |
-| ----- | ------ | -------- | ------- |
-| name  | String | ✓        | -       |
-| age   | String | ✓        | -       |
-| breed | String | ✓        | -       |
-| img   | String | x        | -       |
+| Name     | Type            | Required | default |
+| -------- | --------------- | -------- | ------- |
+| name     | String          | ✓        | -       |
+| age      | String          | ✓        | -       |
+| breed    | String          | ✓        | -       |
+| img      | String          | x        | -       |
+| siblings | [String(CatID)] | x        | -       |
 
 ### Dog
 
-| Name  | Type   | Required | default |
-| ----- | ------ | -------- | ------- |
-| name  | String | ✓        | -       |
-| age   | String | ✓        | -       |
-| breed | String | ✓        | -       |
-| img   | String | x        | -       |
+| Name     | Type            | Required | default |
+| -------- | --------------- | -------- | ------- |
+| name     | String          | ✓        | -       |
+| age      | String          | ✓        | -       |
+| breed    | String          | ✓        | -       |
+| img      | String          | x        | -       |
+| siblings | [String(DogID)] | x        | -       |
 
 ## SCRIPTS
 

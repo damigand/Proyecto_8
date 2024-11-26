@@ -7,6 +7,7 @@ const catSchema = new Schema(
         age: { type: Number, required: true },
         breed: { type: String, required: true },
         img: { type: String, trim: true, required: false },
+        siblings: [{ type: Schema.Types.ObjectId, required: false, ref: 'cats' }],
     },
     {
         timestamps: true,
